@@ -61,8 +61,8 @@ private fun MyAppPreview() {
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
-    val expended = remember { mutableStateOf(false) }
-    val extraPadding = if (expended.value) 48.dp else 0.dp
+    var expended by remember { mutableStateOf(false) }
+    val extraPadding = if (expended) 48.dp else 0.dp
     Surface(
         modifier = modifier.padding(vertical = 4.dp, horizontal = 8.dp),
         color = MaterialTheme.colorScheme.primary
@@ -78,8 +78,8 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
                 Text(text = "Hello ")
                 Text(text = name)
             }
-            ElevatedButton(onClick = { expended.value = !expended.value }) {
-                val text = if (expended.value) "Show less" else "Show more"
+            ElevatedButton(onClick = { expended = !expended }) {
+                val text = if (expended) "Show less" else "Show more"
                 Text(text = text)
             }
         }
