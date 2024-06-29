@@ -40,7 +40,15 @@ fun MyApp(
     modifier: Modifier = Modifier,
     names: List<String> = listOf("World", "Compose")
 ) {
-    Greetings(modifier, names)
+    var shouldShowOnboarding by remember { mutableStateOf(true) }
+
+    Surface(modifier) {
+        if (shouldShowOnboarding) {
+            OnboardingScreen(modifier) { shouldShowOnboarding = false }
+        } else {
+            Greetings(modifier, names)
+        }
+    }
 }
 
 @Preview(showSystemUi = true)
@@ -99,9 +107,7 @@ fun Greetings(
 }
 
 @Composable
-fun OnboardingScreen(modifier: Modifier = Modifier) {
-    var shouldShowOnboarding by remember { mutableStateOf(true) }
-
+fun OnboardingScreen(modifier: Modifier = Modifier, onContinueCLicked: () -> Unit) {
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -110,7 +116,7 @@ fun OnboardingScreen(modifier: Modifier = Modifier) {
         Text("Welcome to the Basics Codelab!")
         Button(
             modifier = Modifier.padding(vertical = 24.dp),
-            onClick = { shouldShowOnboarding = false }
+            onClick = { onContinueCLicked() }
         ) {
             Text("Continue")
         }
@@ -121,6 +127,7 @@ fun OnboardingScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun OnboardingPreview() {
     BasicsCodelabTheme {
-        OnboardingScreen()
+        val shouldShowOnboarding = remember { mutableStateOf(true) }
+        OnboardingScreen(onContinueCLicked = { shouldShowOnboarding.value = false })
     }
 }
