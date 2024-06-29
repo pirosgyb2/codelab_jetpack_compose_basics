@@ -47,6 +47,7 @@ fun MyApp(
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     val expended = remember { mutableStateOf(false) }
+    val extraPadding = if (expended.value) 48.dp else 0.dp
     Surface(
         modifier = modifier.padding(vertical = 4.dp, horizontal = 8.dp),
         color = MaterialTheme.colorScheme.primary
@@ -55,7 +56,9 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
             modifier = Modifier.padding(24.dp)
         ) {
             Column(
-                modifier = modifier.weight(1f)
+                modifier = modifier
+                    .weight(1f)
+                    .padding(bottom = extraPadding)
             ) {
                 Text(text = "Hello ")
                 Text(text = name)
