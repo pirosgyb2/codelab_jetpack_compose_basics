@@ -3,9 +3,11 @@ package com.calmflame.codelab_jetpack_compose_basics.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,6 +28,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
@@ -77,9 +80,17 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         )
     )
 
+    val color by animateColorAsState(
+        targetValue = if (expended) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        )
+    )
+
     Surface(
         modifier = modifier.padding(vertical = 4.dp, horizontal = 8.dp),
-        color = MaterialTheme.colorScheme.primary
+        color = color
     ) {
         Row(
             modifier = Modifier.padding(24.dp)
