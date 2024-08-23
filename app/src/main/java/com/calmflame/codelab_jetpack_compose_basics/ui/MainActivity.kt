@@ -3,6 +3,9 @@ package com.calmflame.codelab_jetpack_compose_basics.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,10 +22,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import com.calmflame.codelab_jetpack_compose_basics.ui.ui.theme.BasicsCodelabTheme
 
@@ -40,9 +45,9 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MyApp(
     modifier: Modifier = Modifier,
-    names: List<String> = listOf("World", "Compose")
+    names: List<String> = List(1000) { "$it" }
 ) {
-    var shouldShowOnboarding by remember { mutableStateOf(true) }
+    var shouldShowOnboarding by rememberSaveable { mutableStateOf(true) }
 
     Surface(modifier) {
         if (shouldShowOnboarding) {
@@ -63,8 +68,15 @@ private fun MyAppPreview() {
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
-    var expended by remember { mutableStateOf(false) }
-    val extraPadding = if (expended) 48.dp else 0.dp
+    var expended by rememberSaveable { mutableStateOf(false) }
+    val extraPadding by animateDpAsState(
+       targetValue = if (expended) 48.dp else 0.dp,
+        animationSpec =  spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        )
+    )
+
     Surface(
         modifier = modifier.padding(vertical = 4.dp, horizontal = 8.dp),
         color = MaterialTheme.colorScheme.primary
@@ -75,7 +87,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
             Column(
                 modifier = modifier
                     .weight(1f)
-                    .padding(bottom = extraPadding)
+                    .padding(bottom = extraPadding.coerceAtLeast(0.dp))
             ) {
                 Text(text = "Hello ")
                 Text(text = name)
